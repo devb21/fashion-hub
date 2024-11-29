@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Welcome to <%= shopData.shopName %></title>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+  </head>
+  <body>
+    <div class="header">
+      <div class="container">
+        <div class="navbar">
+          <div class="logo">
+            <a href="/"><h1>Fashion Hub</h1></a>
+          </div>
+          <nav>
+            <ul id="MenuItems">
+              <li><a href="/">Home</a></li>
+              <li><a href="/about">About</a></li>           
+            </ul>
+          </nav>
+          
+          <a href="/cart"><img src="/images/cart.png" width="30px" height="30px" alt="Cart"></a>
+          <img src="/images/menu.png" onclick="menutoggle()" class="menu-icon" alt="Menu Icon">
+        </div>
+        <div class="row">
+          <div class="col-2">
+            <h1>Fashion Is Important<br>It's Life Enhancing</h1>
+            <p>Don't Change To Fit The Fashion. Change The Fashion To Fit You!</p>
+            <a href="#" class="btn">Explore Now &#8594;</a>
+          </div>
+          <div class="col-2">
+            <img src="/images/image1.png" alt="Workout Style">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Featured Categories -->
+    <div class="categories">
+      <div class="small-container">
+        <div class="row">
+          <div class="col-3">
+            <img src="/images/category-1.jpg" alt="Category 1">
+          </div>
+          <div class="col-3">
+            <img src="/images/category-2.jpg" alt="Category 2">
+          </div>
+          <div class="col-3">
+            <img src="/images/category-3.jpg" alt="Category 3">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="title">Featured Products</h2>
+    <div class="small-container">
+<div class="row">
+  <% featuredProducts.forEach(product => { %>
+    <div class="col-4">
+      <a href="/products/<%= product.id %>">
+        <img src="/images/<%= product.images %>" alt="<%= product.name %>">
+      </a>
+      <h4><%= product.name %></h4>
+      <div class="rating">
+        <% for (let i = 0; i < 5; i++) { %>
+          <i class="fa <%= i < product.rating ? 'fa-star' : 'fa-star-o' %>"></i>
+        <% } %>
+      </div>
+      <p>£<%= product.price %></p>
+    </div>
+  <% }) %>
+</div>
+
+
+
+<h2 class="title">Latest Products</h2>
+<div class="row">
+  <% latestProducts.forEach(product => { %>
+    <div class="col-4">
+      <a href="/products/<%= product.id %>">
+        <img src="/images/<%= product.images %>" alt="<%= product.name %>">
+      </a>
+      <h4><%= product.name %></h4>
+      <div class="rating">
+        <% for (let i = 0; i < 5; i++) { %>
+          <i class="fa <%= i < product.rating ? 'fa-star' : 'fa-star-o' %>"></i>
+        <% } %>
+      </div>
+      <p>£<%= product.price %></p>
+    </div>
+  <% }) %>
+</div>
+</div>
+</div>
+
+
+    <!-- Footer -->
+    <div class="footer">
+      <div class="container">
+        <div class="row">
+          <div class="footer-col1">
+            <h3>Download Our App</h3>
+            <p>Download App for Android and iOS mobile phones.</p>
+            <div class="app-logo">
+              <img src="/images/play-store.png" alt="Play Store">
+              <img src="/images/app-store.png" alt="App Store">
+            </div>
+          </div>
+          <div class="footer-col2">
+            <a href="/"><h1>Fashion Hub</h1></a>
+            <p>Our Purpose Is To Sustainably create Pleasure and Benefits of Fashion Hub Accessible to the Many.</p>
+          </div>
+          <div class="footer-col3">
+            <h3>Useful Links</h3>
+            <ul>
+              <li>Coupons</li>
+              <li>Blog Post</li>
+              <li>Return Policy</li>
+              <li>Join Affiliate</li>
+            </ul>
+          </div>
+          <div class="footer-col4">
+            <h3>Follow Us</h3>
+            <ul>
+              <li>Facebook</li>
+              <li>Twitter</li>
+              <li>Instagram</li>
+              <li>YouTube</li>
+            </ul>
+          </div>
+        </div>
+        <hr>
+        <p class="copyright">Copyright 2024 - Fashion Hub</p>
+      </div>
+    </div>
+  </body>
+</html>

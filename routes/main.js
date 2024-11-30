@@ -6,6 +6,8 @@ router.get('/about', function (req, res) {
 });
 
 router.get('/', (req, res) => {
+    const user = req.session ? req.session.user : null; // Retrieve user from session, if available
+
     // Query for featured products (latest products, limited to 4 items)
     const featuredQuery = 'SELECT * FROM products ORDER BY created_at DESC LIMIT 4';
 
@@ -17,9 +19,10 @@ router.get('/', (req, res) => {
         }
 
         // Query to fetch latest products excluding those in the featured results
-        const latestQuery = `SELECT * FROM products 
-                             WHERE id NOT IN (${featuredResults.map(product => product.id).join(',')}) 
-                             ORDER BY created_at DESC LIMIT 4`;
+        const featuredIds = featuredResults.map(product => product.id).join(',');
+        const latestQuery = featuredIds
+            ? `SELECT * FROM products WHERE id NOT IN (${featuredIds}) ORDER BY created_at DESC LIMIT 4`
+            : `SELECT * FROM products ORDER BY created_at DESC LIMIT 4`;
 
         db.query(latestQuery, (err, latestResults) => {
             if (err) {
@@ -31,7 +34,8 @@ router.get('/', (req, res) => {
             res.render('index', {
                 shopData: { shopName: 'Fashion Hub' },
                 featuredProducts: featuredResults,
-                latestProducts: latestResults
+                latestProducts: latestResults,
+                user // Pass the user to the template
             });
         });
     });

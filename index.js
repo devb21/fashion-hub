@@ -1,80 +1,64 @@
 // Import express and ejs
-var express = require ('express')
-var ejs = require('ejs')
+var express = require('express');
+var ejs = require('ejs');
 
-//Import mysql module
-var mysql = require('mysql2')
+// Import mysql module
+var mysql = require('mysql2');
 
+// Import express-session for session management
+var session = require('express-session');
 
 // Create the express application object
-const app = express()
-const port = 8000
+const app = express();
+const port = 8000;
 
 // Tell Express that we want to use EJS as the templating engine
-app.set('view engine', 'ejs')
+app.set('view engine', 'ejs');
 
-// Set up the body parser 
-app.use(express.urlencoded({ extended: true }))
+// Set up the body parser
+app.use(express.urlencoded({ extended: true }));
 
-// Set up public folder (for css and statis js)
-app.use(express.static(__dirname + '/public'))
+// Set up public folder (for css and static js)
+app.use(express.static(__dirname + '/public'));
+
+// Set up session management
+app.use(
+  session({
+    secret: 'your-secret-key', // Replace this with a strong secret key
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // Use `true` if using HTTPS
+  })
+);
 
 // Define the database connection
-const db = mysql.createConnection ({
-    host: 'localhost',
-    user: 'fashion_hub_app',
-    password: 'fashionyuiop',
-    database: 'fashion_hub'
-})
+const db = mysql.createConnection({
+  host: 'localhost',
+  user: 'fashion_hub_app',
+  password: 'fashionyuiop',
+  database: 'fashion_hub',
+});
+
 // Connect to the database
 db.connect((err) => {
-    if (err) {
-        throw err
-    }
-    console.log('Connected to database')
-})
-global.db = db
+  if (err) {
+    throw err;
+  }
+  console.log('Connected to database');
+});
+
+global.db = db;
 
 // Define our application-specific data
-app.locals.shopData = {shopName: "Fashion Hub"}
+app.locals.shopData = { shopName: 'Fashion Hub' };
 
 // Load the route handlers
-const mainRoutes = require("./routes/main")
-app.use('/', mainRoutes)
-
+const mainRoutes = require('./routes/main');
+app.use('/', mainRoutes);
 
 // Load the route handlers for /users
-const usersRoutes = require('./routes/users')
-app.use('/users', usersRoutes)
-// Main Route: Home
-app.get('/', (req, res) => {
-    // Query to fetch featured products
-    const featuredQuery = 'SELECT * FROM products WHERE is_featured = 1 LIMIT 4';
-    
-    db.query(featuredQuery, (err, featuredProducts) => {
-      if (err) {
-        console.error('Error fetching featured products:', err);
-        return res.status(500).send('Error fetching featured products');
-      }
-  
-      // Query to fetch latest products (ignoring featured products)
-      const latestQuery = 'SELECT * FROM products WHERE is_featured = 0 ORDER BY created_at DESC LIMIT 4';
-      
-      db.query(latestQuery, (err, latestProducts) => {
-        if (err) {
-          console.error('Error fetching latest products:', err);
-          return res.status(500).send('Error fetching latest products');
-        }
-  
-        // Render the index page with both featured and latest products
-        res.render('index', {
-          user: req.session.user, // Pass session user data to the view
-          featuredProducts: featuredProducts, // Pass featured products to the view
-          latestProducts: latestProducts // Pass latest products to the view
-        });
-      });
-    });
-  });
-  
+const usersRoutes = require('./routes/users');
+app.use('/users', usersRoutes);
+
 // Start the web app listening
-app.listen(port, () => console.log(`Node app listening on port ${port}!`))
+app.listen(port, () => console.log(`Node app listening on port ${port}!`));

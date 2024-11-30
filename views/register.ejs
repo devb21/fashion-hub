@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Register for <%=shopData.shopName%></title>
+    <link rel="stylesheet"  type="text/css" href="/main.css" />
+  </head>
+  <body>
+    <h1>Register for <%=shopData.shopName%></h1>
+<form action="registered" method="POST">
+  <label for="username">Username:</label>
+  <input type="text" id="username" name="username" required>
+  <br/>
+  <label for="firstname">Firstname:</label>
+  <input type="text" id="firstname" name="firstname" required>
+  <br/>
+  <label for="lastname">Lastname:</label>
+  <input type="text" id="lastname" name="lastname" required>
+  <br/>
+  <label for="email">Email:</label>
+  <input type="text" id="email" name="email" required>
+  <br/>
+  <label for="password">Password:</label>
+  <input type="password" id="password" name="password" required>
+  <br/>
+  <button type="submit">Register</button>
+</form>
+  </body>
+</html>

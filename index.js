@@ -43,6 +43,9 @@ const mainRoutes = require("./routes/main")
 app.use('/', mainRoutes)
 
 
+// Load the route handlers for /users
+const usersRoutes = require('./routes/users')
+app.use('/users', usersRoutes)
 // Main Route: Home
 app.get('/', (req, res) => {
     // Query to fetch featured products

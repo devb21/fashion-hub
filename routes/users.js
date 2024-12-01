@@ -70,11 +70,20 @@ router.post('/loggedin', (req, res, next) => {
 
 // Updated logout route to redirect to the home page
 router.get('/logout', (req, res) => {
+<<<<<<< HEAD
   req.session.destroy((err) => {
     if (err) {
       return res.redirect('/'); // Redirect to the home page in case of an error
     }
     res.redirect('/'); // Redirect to the home page after logout
+=======
+    req.session.destroy((err) => {
+      if (err) {
+        return res.redirect('./');
+      }
+      res.redirect('./');
+    });
+>>>>>>> e8ce21b888de18b1bae1b99564d7124a086afe37
   });
 });
 

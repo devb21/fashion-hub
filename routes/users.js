@@ -3,12 +3,7 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 const saltRounds = 10;
 
-// Default route for /users/
-router.get('/', (req, res) => {
-  res.send('Welcome to the Users Section'); // You can change this to render a specific view.
-});
-
-// Other routes...
+// Route to display the registration form
 router.get('/register', (req, res) => {
   res.render('register.ejs');
 });
@@ -31,16 +26,22 @@ router.post('/registered', (req, res, next) => {
       if (err) {
         return next(err);
       }
+      // Ensure session object exists before setting it
+      if (!req.session) {
+        return res.status(500).send('Session not initialized');
+      }
       req.session.user = { username, firstName, lastName, email };
-      res.redirect('/');
+      res.redirect('/'); // Redirect to home page (should be /)
     });
   });
 });
 
+// Route to display the login form
 router.get('/login', (req, res) => {
   res.render('login.ejs');
 });
 
+// Handle login form submission
 router.post('/loggedin', (req, res, next) => {
   const username = req.body.username;
   const plainPassword = req.body.password;
@@ -62,8 +63,12 @@ router.post('/loggedin', (req, res, next) => {
       if (isMatch) {
         const firstName = result[0].first_name;
         const lastName = result[0].last_name;
+        // Ensure session object exists before setting it
+        if (!req.session) {
+          return res.status(500).send('Session not initialized');
+        }
         req.session.user = { username, firstName, lastName };
-        res.redirect('./');
+        res.redirect('./'); // Redirect to home page (should be /)
       } else {
         res.send('Login failed: Incorrect password.');
       }
@@ -71,12 +76,13 @@ router.post('/loggedin', (req, res, next) => {
   });
 });
 
+// Logout Route
 router.get('/logout', (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       return res.redirect('/'); // Redirect back to home page on error
     }
-    res.redirect('/'); // Redirect to home page after logout
+    res.redirect('./'); // Redirect to home page after logout
   });
 });
 

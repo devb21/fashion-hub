@@ -60,7 +60,7 @@ router.post('/loggedin', (req, res, next) => {
         const firstName = result[0].first_name;
         const lastName = result[0].last_name;
         req.session.user = { username, firstName, lastName };
-        res.redirect('./');
+        res.redirect('/');
       } else {
         res.send('Login failed: Incorrect password.');
       }

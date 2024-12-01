@@ -82,7 +82,7 @@ router.get('/logout', (req, res) => {
     if (err) {
       return res.redirect('/'); // Redirect back to home page on error
     }
-    res.redirect('./'); // Redirect to home page after logout
+    res.redirect('../'); // Redirect to home page after logout
   });
 });
 

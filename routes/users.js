@@ -26,8 +26,12 @@ router.post('/registered', (req, res, next) => {
       if (err) {
         return next(err);
       }
+      // Ensure session object exists before setting it
+      if (!req.session) {
+        return res.status(500).send('Session not initialized');
+      }
       req.session.user = { username, firstName, lastName, email };
-      res.redirect('/');
+      res.redirect('/'); // Redirect to home page (should be /)
     });
   });
 });
@@ -59,8 +63,12 @@ router.post('/loggedin', (req, res, next) => {
       if (isMatch) {
         const firstName = result[0].first_name;
         const lastName = result[0].last_name;
+        // Ensure session object exists before setting it
+        if (!req.session) {
+          return res.status(500).send('Session not initialized');
+        }
         req.session.user = { username, firstName, lastName };
-        res.redirect('./');
+        res.redirect('/'); // Redirect to home page (should be /)
       } else {
         res.send('Login failed: Incorrect password.');
       }
@@ -68,15 +76,14 @@ router.post('/loggedin', (req, res, next) => {
   });
 });
 
-
+// Logout Route
 router.get('/logout', (req, res) => {
-    req.session.destroy((err) => {
-      if (err) {
-        return res.redirect('./');
-      }
-      res.redirect('./');
-    });
+  req.session.destroy((err) => {
+    if (err) {
+      return res.redirect('/'); // Redirect back to home page on error
+    }
+    res.redirect('/'); // Redirect to home page after logout
   });
-  
+});
 
 module.exports = router;

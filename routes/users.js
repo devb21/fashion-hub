@@ -68,7 +68,7 @@ router.post('/loggedin', (req, res, next) => {
           return res.status(500).send('Session not initialized');
         }
         req.session.user = { username, firstName, lastName };
-        res.redirect('./'); // Redirect to home page (should be /)
+        res.redirect('../'); // Redirect to home page (should be /)
       } else {
         res.send('Login failed: Incorrect password.');
       }

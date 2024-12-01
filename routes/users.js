@@ -1,81 +1,100 @@
-const express = require('express');
+// Create a new router
+const express = require("express")
+const router = express.Router()
+
+// Include bcrypt
 const bcrypt = require('bcrypt');
-const router = express.Router();
 const saltRounds = 10;
 
-// Route to display the registration form
-router.get('/register', (req, res) => {
-  res.render('register.ejs');
+router.get('/register', function (req, res, next) {
+    res.render('register.ejs');
 });
 
-// Handle registration form submission
-router.post('/registered', (req, res, next) => {
-  const plainPassword = req.body.password;
-  const username = req.body.username;
-  const firstName = req.body.firstname;
-  const lastName = req.body.lastname;
-  const email = req.body.email;
+router.post('/registered', function (req, res, next) {
+    const plainPassword = req.body.password;
+    const username = req.body.username;
+    const firstName = req.body.firstname;
+    const lastName = req.body.lastname;
+    const email = req.body.email;
 
-  bcrypt.hash(plainPassword, saltRounds, (err, hashedPassword) => {
-    if (err) {
-      return next(err);
-    }
-    let sqlquery = 'INSERT INTO users (username, first_name, last_name, email, hashedPassword) VALUES (?,?,?,?,?)';
-    let newUser = [username, firstName, lastName, email, hashedPassword];
-    db.query(sqlquery, newUser, (err, result) => {
-      if (err) {
-        return next(err);
-      }
-      req.session.user = { username, firstName, lastName, email };
-      res.redirect('/'); // Redirect to home page (should be /)
-    });
-  });
-});
+    bcrypt.hash(plainPassword, saltRounds, function (err, hashedPassword) {
+        if (err) {
+            return next(err);  // Handle error properly
+        }
+
+        let sqlquery = "INSERT INTO users (username, first_name, last_name, email, hashedPassword) VALUES (?,?,?,?,?)";
+        let newUser = [username, firstName, lastName, email, hashedPassword];
+
+        db.query(sqlquery, newUser, (err, result) => {
+            if (err) {
+                return next(err);  // Handle error if something goes wrong
+            }
+
+            let resultMessage = 'Hello ' + firstName + ' ' + lastName +
+                ', you are now registered! We will send an email to you at ' + email;
+            resultMessage;
+
+            res.send(resultMessage);
+        });  // Close db.query callback
+    });  // Close bcrypt.hash callback
+});  // Close router.post callback
+
+
 
 // Route to display the login form
-router.get('/login', (req, res) => {
-  res.render('login.ejs');
+router.get('/login', function(req, res, next) {
+    res.render('login.ejs');
 });
 
-// Handle login form submission
-router.post('/loggedin', (req, res, next) => {
-  const username = req.body.username;
-  const plainPassword = req.body.password;
+// Route to handle login form submission
+router.post('/loggedin', function(req, res, next) {
+    const username = req.body.username;
+    const plainPassword = req.body.password;
 
-  let sqlquery = 'SELECT * FROM users WHERE username = ?';
-  db.query(sqlquery, [username], (err, result) => {
-    if (err) {
-      return next(err);
-    }
-    if (result.length === 0) {
-      return res.send('Login failed: User not found.');
-    }
+    // Query the database to find the user by username
+    let sqlquery = "SELECT * FROM users WHERE username = ?";
+    db.query(sqlquery, [username], (err, result) => {
+        if (err) {
+            return next(err);  // Handle error properly
+        }
+        if (result.length === 0) {
+            // No user found with this username
+            return res.send('Login failed: User not found.');
+        }
 
-    const hashedPassword = result[0].hashedPassword;
-    bcrypt.compare(plainPassword, hashedPassword, (err, isMatch) => {
-      if (err) {
-        return next(err);
-      }
-      if (isMatch) {
-        const firstName = result[0].first_name;
-        const lastName = result[0].last_name;
-        req.session.user = { username, firstName, lastName };
-        res.redirect('/'); // Redirect to home page (should be /)
-      } else {
-        res.send('Login failed: Incorrect password.');
-      }
+        // Compare the password
+        const hashedPassword = result[0].hashedPassword;
+        bcrypt.compare(plainPassword, hashedPassword, (err, isMatch) => {
+            if (err) {
+                return next(err);  // Handle error properly
+            }
+            if (isMatch) {
+                // Password matches
+                const firstName = result[0].first_name;
+                const lastName = result[0].last_name;
+                let resultMessage = 'Hello ' + firstName + ' ' + lastName +
+                    ', you have successfully logged in!';
+                res.send(resultMessage);
+            } else {
+                // Password does not match
+                res.send('Login failed: Incorrect password.');
+            }
+        });
     });
-  });
 });
 
-// Logout Route
-router.get('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.redirect('/'); // Redirect back to home page on error
-    }
-    res.redirect('/'); // Redirect to home page after logout
-  });
-});
 
-module.exports = router;
+// Logout route
+/*router.get('/logout', redirectLogin, (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.redirect('./');
+        }
+        res.send('you are now logged out. <a href='+'/'+'>Home</a>');
+    });
+});
+*/
+
+
+// Export the router object so index.js can access it
+module.exports = router

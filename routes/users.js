@@ -74,7 +74,7 @@ router.post('/loggedin', function(req, res, next) {
                 const lastName = result[0].last_name;
                 let resultMessage = 'Hello ' + firstName + ' ' + lastName +
                     ', you have successfully logged in!';
-                    res.redirect('/');
+                    res.redirect('./');
             } else {
                 // Password does not match
                 res.send('Login failed: Incorrect password.');

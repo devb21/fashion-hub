@@ -27,7 +27,7 @@ router.post('/registered', (req, res, next) => {
         return next(err);
       }
       req.session.user = { username, firstName, lastName, email };
-      res.redirect('/'); // This will redirect to your home page
+      res.redirect('/'); // Redirect to home page (should be /)
     });
   });
 });
@@ -60,7 +60,7 @@ router.post('/loggedin', (req, res, next) => {
         const firstName = result[0].first_name;
         const lastName = result[0].last_name;
         req.session.user = { username, firstName, lastName };
-        res.redirect('/'); // Redirect after login to the homepage
+        res.redirect('/'); // Redirect to home page (should be /)
       } else {
         res.send('Login failed: Incorrect password.');
       }
@@ -72,9 +72,9 @@ router.post('/loggedin', (req, res, next) => {
 router.get('/logout', (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      return res.redirect('/'); // On error, redirect back to home
+      return res.redirect('/'); // Redirect back to home page on error
     }
-    res.redirect('/'); // Redirect to home after logout
+    res.redirect('/'); // Redirect to home page after logout
   });
 });
 

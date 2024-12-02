@@ -8,12 +8,17 @@ const mysql = require('mysql2');
 // Import express-session for session management
 const session = require('express-session');
 
+// Import express-sanitizer for XSS protection
+const expressSanitizer = require('express-sanitizer');
+
 // Create the express application object
 const app = express();
 const port = 8000;
 
 // Tell Express that we want to use EJS as the templating engine
 app.set('view engine', 'ejs');
+
+app.use(expressSanitizer()); // Use express sanitizer
 
 // Set up the body parser
 app.use(express.urlencoded({ extended: true }));
@@ -30,6 +35,12 @@ app.use(
     cookie: { secure: false }, // Use `true` if using HTTPS
   })
 );
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something went wrong!'); // Display a user-friendly error
+});
 
 // Define the database connection
 const db = mysql.createConnection({

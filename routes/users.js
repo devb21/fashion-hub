@@ -30,13 +30,12 @@ router.post('/registered', [check('email').isEmail()], (req, res, next) => {
     if (err) {
       return next(err);
     }
-    let sqlquery = 'INSERT INTO users (username, first_name, last_name, email, hashedPassword) VALUES (?,?,?,?,?)';
-    let newUser = [username, firstName, lastName, email, hashedPassword];
+    const sqlquery = 'INSERT INTO users (username, first_name, last_name, email, hashedPassword) VALUES (?,?,?,?,?)';
+    const newUser = [username, firstName, lastName, email, hashedPassword];
     db.query(sqlquery, newUser, (err, result) => {
       if (err) {
         return next(err);
       }
-      // Ensure session object exists before setting it
       if (!req.session) {
         return res.status(500).send('Session not initialized');
       }
@@ -79,7 +78,7 @@ router.post('/loggedin', [
   const username = req.body.username;
   const plainPassword = req.body.password;
 
-  let sqlquery = 'SELECT * FROM users WHERE username = ?';
+  const sqlquery = 'SELECT * FROM users WHERE username = ?';
   db.query(sqlquery, [username], (err, result) => {
     if (err) {
       return next(err);
